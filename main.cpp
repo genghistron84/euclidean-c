@@ -1,11 +1,14 @@
 #include <iostream>
 #include <cstring>
+#include <stdlib.h>
+#include <stdio.h>
+#include <bitset>
 
-const int maxSteps = 16;
+const int MAX_STEPS = 16;
 
-int storedRhythmA[16];
-int storedRhythmB[16];
-int storedRhythmC[16];
+int storedRhythmA[MAX_STEPS];
+int storedRhythmB[MAX_STEPS];
+int storedRhythmC[MAX_STEPS];
 
 int tempRhythmA[16];
 int tempRhythmB[16];
@@ -34,11 +37,15 @@ int bin2dec(int arr[16]) {
   return output;
 }
 
-int euclid(int arr[maxSteps], int tempArr[maxSteps], int steps, int pulses, int rotate) {
-  //rotate += 1;
-  //rotate % steps;
-  memset(arr, 0, maxSteps);
-  memset(tempArr, 0, maxSteps);
+void printArr(int arr[16]) {
+  for (int i = 0; i <  MAX_STEPS; i++)
+    std::cout << arr[i];
+  std::cout << std::endl;
+}
+
+void euclid(int arr[MAX_STEPS], int tempArr[MAX_STEPS], int steps, int pulses, int rotate) {
+  memset(arr, 0, MAX_STEPS);
+  memset(tempArr, 0, MAX_STEPS);
   int bucket = 0;
 
   for (int i = 0; i < steps; i++) {
@@ -53,39 +60,52 @@ int euclid(int arr[maxSteps], int tempArr[maxSteps], int steps, int pulses, int 
     }
   }
   if (rotate > 0) rotateSeq(arr, tempArr, steps, rotate);
-  int x = bin2dec(arr);
-  std::cout << x << std::endl;
-  return x;
 }
 
 void setup() {
   stepsA = 16;
-  pulsesA = 4;
-  rotateA = 0;
+  pulsesA = 3;
+  rotateA = 1;
   curStepA = 0;
 
   stepsB = 16;
-  pulsesB = 2;
-  rotateB = 0;
+  pulsesB = 8;
+  rotateB = 1;
   curStepB = 0;
 
   stepsC = 16;
-  pulsesC = 8;
-  rotateC = 0;
+  pulsesC = 12;
+  rotateC = 1;
   curStepC = 0;
 
   // set all rhythm arrays to zero
-  memset(storedRhythmA, 0, maxSteps);
-  memset(storedRhythmB, 0, maxSteps);
-  memset(storedRhythmC, 0, maxSteps);
+  memset(&storedRhythmA, 0, MAX_STEPS);
+  memset(storedRhythmB, 0, MAX_STEPS);
+  memset(storedRhythmC, 0, MAX_STEPS);
+  euclid(storedRhythmA, tempRhythmA, stepsA, pulsesA, rotateA);
+  euclid(storedRhythmB, tempRhythmB, stepsB, pulsesB, rotateB);
+  euclid(storedRhythmC, tempRhythmC, stepsC, pulsesC, rotateC);
+  printArr(storedRhythmA);
+  printArr(storedRhythmB);
+  printArr(storedRhythmC);
+}
+
+void simulatePulse(int *step) {
+  step++;
+  std::cout << step << std::endl;
+}
+
+void tick() {
+  simulatePulse(&curStepA);
 }
 
 int main() {
   setup();
-  //for (int i = 1; i <= 16; i++) {
-    euclid(storedRhythmA, tempRhythmA, stepsA, pulsesA, rotateA);
-    euclid(storedRhythmB, tempRhythmB, stepsB, pulsesB, rotateB);
-    euclid(storedRhythmC, tempRhythmC, stepsC, pulsesC, rotateC);
-  //}
+
+  for(int i = 0; i < 8; i++) {
+    tick();
+    //std::cout << curStepA << std::endl;
+  }
   return 0;
 }
+
